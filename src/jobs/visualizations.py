@@ -51,7 +51,10 @@ def correct_country_name(name, threshold=85):
     
     return name
 
+# Register the function as a UDF
 correct_country_name_udf = F.udf(correct_country_name, types.StringTypes())
+
+# Apply the UDF to the 'country' column to correct country names
 df_filtered = df_filtered.withColumn('country', correct_country_name_udf(df_filtered['country']))
 
 # show dataframe
