@@ -1,8 +1,7 @@
 # imports
 from pyspark.sql import SparkSession, functions as F
-# from pyspark.sql.functions import col
 from functools import reduce
-import pandas as pd
+
 
 # Create spark instance
 spark = SparkSession.builder.appName("End To End Processing").getOrCreate()
