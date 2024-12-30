@@ -11,6 +11,26 @@ spark = SparkSession.builder.appName("End To End Processing").getOrCreate()
 # Read the data from txt file
 df = spark.read.option("delimiter", ":").csv("input/GlobalAirportDatabase.txt", header=False)
 
+# Define schema
+schema = types.StructType([
+    types.StructField("ICAO_code", types.StringType(), True),
+    types.StructField("IATA_code", types.StringType(), True),
+    types.StructField("airport_name", types.StringType(), True),
+    types.StructField("city", types.StringType(), True),
+    types.StructField("country", types.StringType(), True),
+    types.StructField("latitude_degrees", types.StringType(), True),
+    types.StructField("latitude_minutes", types.StringType(), True),
+    types.StructField("latitude_seconds", types.StringType(), True),
+    types.StructField("latitude_direction", types.StringType(), True),
+    types.StructField("longitude_degrees", types.StringType(), True),
+    types.StructField("longitude_minutes", types.StringType(), True),
+    types.StructField("longitude_seconds", types.StringType(), True),
+    types.StructField("longitude_direction", types.StringType(), True),
+    types.StructField("altitude", types.StringType(), True),
+    types.StructField("latitude_coord", types.StringType(), True),
+    types.StructField("longitude_coord", types.StringType(), True),
+])
+
 # Assign the column names
 df = df.toDF("ICAO_code", "IATA_code",
              "airport_name", "city",
