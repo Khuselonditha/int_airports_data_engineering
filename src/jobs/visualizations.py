@@ -1,6 +1,8 @@
 # imports
-from pyspark.sql import SparkSession, functions as F
+import pycountry
+from pyspark.sql import SparkSession ,functions as F, types
 from functools import reduce
+from fuzzywuzzy import process
 
 
 # Create spark instance
@@ -17,7 +19,8 @@ df = df.toDF("ICAO_code", "IATA_code",
              "latitude_direction", "longitude_degrees",
              "longitude_minutes", "longitude_seconds",
              "longitude_direction", "altitude",
-             "latitude_coord", "longitude_coord",)
+             "latitude_coord", "longitude_coord"
+             )
 
 # Check each row for 'U' in any column
 df_filtered = df.filter(
@@ -36,6 +39,20 @@ df_filtered = df_filtered.select("ICAO_code", "IATA_code", "airport_name",
                "city", "country", "latitude_direction",
                "longitude_direction", "altitude",
                "latitude_coord", "longitude_coord")
+
+# function for correcting countries
+def correct_country_name(name, threshold=85):
+    countries = [country.name for country in pycountry.countries]
+
+    correct_name, score = process.extractOne(name, countries)
+
+    if score >= threshold:
+        return correct_name
+    
+    return name
+
+correct_country_name_udf = F.udf(correct_country_name, types.StringTypes())
+df_filtered = df_filtered.withColumn('country', correct_country_name_udf(df_filtered['country']))
 
 # show dataframe
 df_filtered.show(truncate=False)
