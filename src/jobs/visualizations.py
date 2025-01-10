@@ -1,6 +1,6 @@
 # imports
 import pycountry
-from pyspark.sql import SparkSession ,functions as F, types
+from pyspark.sql import SparkSession, functions as F, types
 from functools import reduce
 from fuzzywuzzy import process
 
@@ -72,7 +72,7 @@ def correct_country_name(name, threshold=85):
     return name
 
 # Register the function as a UDF
-correct_country_name_udf = F.udf(correct_country_name, types.StringTypes())
+correct_country_name_udf = F.udf(correct_country_name, types.StringType())
 
 # Apply the UDF to the 'country' column to correct country names
 df_filtered = df_filtered.withColumn('country', correct_country_name_udf(df_filtered['country']))
